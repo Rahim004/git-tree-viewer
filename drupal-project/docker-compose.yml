@@ -1,0 +1,140 @@
+# ============================================
+# DOCKER COMPOSE КОНФИГУРАЦИЯ ДЛЯ DRUPAL
+# Версия: 3.8
+# ============================================
+
+version: '3.8'
+
+# ============================================
+# 1. СЕТИ (NETWORKS)
+# Контейнеры в одной сети могут общаться между собой
+# ============================================
+networks:
+  drupal_network:           # Имя сети
+    driver: bridge          # Тип драйвера (самый простой)
+
+# ============================================
+# 2. ТОМЫ (VOLUMES) - "флешки" для хранения данных
+# Данные сохраняются даже после удаления контейнеров
+# ============================================
+volumes:
+  postgres_data:            # Для базы данных
+    driver: local
+  drupal_files:             # Для файлов Drupal (картинки, документы)
+    driver: local
+  drupal_private:           # Для приватных файлов Drupal
+    driver: local
+
+# ============================================
+# 3. СЕРВИСЫ (SERVICES) - наши контейнеры
+# ============================================
+
+services:
+  # ---------- СЕРВИС 1: POSTGRESQL (БАЗА ДАННЫХ) ----------
+  postgres:
+    image: postgres:15-alpine      # Образ PostgreSQL 15 (легкая версия)
+    container_name: drupal_db      # Имя контейнера
+    
+    restart: unless-stopped        # Автоперезапуск при падении
+    
+    # ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ (настройки)
+    environment:
+      POSTGRES_DB: drupaldb        # Имя базы данных
+      POSTGRES_USER: drupaluser    # Имя пользователя БД
+      POSTGRES_PASSWORD: DrupalPass123!  # Пароль (ИЗМЕНИТЕ НА СВОЙ!)
+      TZ: Europe/Moscow            # Часовой пояс
+    
+    # ПОДКЛЮЧЕНИЕ ТОМОВ (том:путь_в_контейнере)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Данные БД
+      - ./backups:/backups                      # Папка для бэкапов
+    
+    # ПОДКЛЮЧЕНИЕ К СЕТИ
+    networks:
+      - drupal_network
+    
+    # ПРОВЕРКА ЗДОРОВЬЯ (ждем пока БД запустится)
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U drupaluser"]
+      interval: 10s    # Проверять каждые 10 сек
+      timeout: 5s      # Ждать ответ 5 сек
+      retries: 5       # Пробовать 5 раз
+    
+    # Если нужно подключиться к БД снаружи, раскомментируйте:
+    # ports:
+    #   - "5432:5432"
+
+  # ---------- СЕРВИС 2: DRUPAL (САЙТ) ----------
+  drupal:
+    image: drupal:10-apache        # Образ Drupal 10 с Apache
+    container_name: drupal_app     # Имя контейнера
+    
+    restart: unless-stopped
+    
+    # ЗАВИСИМОСТИ: ждем пока БД будет готова
+    depends_on:
+      postgres:
+        condition: service_healthy
+    
+    # НАСТРОЙКИ DRUPAL
+    environment:
+      # Настройки подключения к БД
+      DRUPAL_DATABASE_HOST: postgres          # Имя сервиса БД
+      DRUPAL_DATABASE_NAME: drupaldb          # Имя БД
+      DRUPAL_DATABASE_USERNAME: drupaluser    # Пользователь
+      DRUPAL_DATABASE_PASSWORD: DrupalPass123! # Пароль
+      DRUPAL_DATABASE_PORT: 5432              # Порт БД
+      DRUPAL_DATABASE_DRIVER: pgsql           # Тип БД: PostgreSQL
+      
+      # Дополнительные настройки
+      DRUPAL_PROFILE: standard                # Профиль установки
+      PHP_MEMORY_LIMIT: 256M                  # Память для PHP
+    
+    # ПОДКЛЮЧАЕМ ТОМЫ И ПАПКИ
+    volumes:
+      # Основные тома
+      - drupal_files:/var/www/html/web/sites/default/files
+      - drupal_private:/var/www/html/private
+      
+      # Локальные папки (для кастомных модулей и тем)
+      - ./modules:/var/www/html/modules
+      - ./themes:/var/www/html/themes
+      
+      # Конфигурационный файл Drupal
+      - ./config/drupal/settings.php:/var/www/html/web/sites/default/settings.php:ro
+    
+    networks:
+      - drupal_network
+    
+    # Порт для прямого доступа к Drupal (для тестирования)
+    ports:
+      - "8080:80"
+
+  # ---------- СЕРВИС 3: NGINX (ВЕБ-СЕРВЕР) ----------
+  nginx:
+    image: nginx:alpine            # Образ Nginx (легкий)
+    container_name: drupal_nginx   # Имя контейнера
+    
+    restart: unless-stopped
+    
+    # Ждем запуска Drupal
+    depends_on:
+      - drupal
+    
+    # ОТКРЫВАЕМ ПОРТЫ:
+    # - 80 порт (HTTP) - основной сайт
+    ports:
+      - "80:80"
+      # Для HTTPS раскомментируйте:
+      # - "443:443"
+    
+    # ПОДКЛЮЧАЕМ КОНФИГУРАЦИОННЫЕ ФАЙЛЫ
+    volumes:
+      # Конфиг Nginx (создадим позже)
+      - ./config/nginx/conf.d:/etc/nginx/conf.d:ro
+      
+      # Доступ к файлам Drupal (только для чтения)
+      - drupal_files:/var/www/html/web/sites/default/files:ro
+    
+    networks:
+      - drupal_network

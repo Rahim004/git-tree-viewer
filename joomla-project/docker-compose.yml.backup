@@ -1,0 +1,117 @@
+# ============================================
+# DOCKER COMPOSE КОНФИГУРАЦИЯ ДЛЯ JOOMLA + MYSQL
+# Версия: 3.8
+# ============================================
+
+version: '3.8'
+
+# ============================================
+# 1. СЕТИ (NETWORKS)
+# Контейнеры в одной сети могут общаться между собой
+# ============================================
+networks:
+  joomla_network:           # Имя сети
+    driver: bridge          # Тип драйвера (самый простой)
+
+# ============================================
+# 2. ТОМЫ (VOLUMES) - "флешки" для хранения данных
+# Данные сохраняются даже после удаления контейнеров
+# ============================================
+volumes:
+  mysql_data:               # Для базы данных MySQL
+    driver: local
+  joomla_data:              # Для файлов Joomla (картинки, документы, настройки)
+    driver: local
+
+# ============================================
+# 3. СЕРВИСЫ (SERVICES) - наши контейнеры
+# ============================================
+
+services:
+  # ---------- СЕРВИС 1: MYSQL (БАЗА ДАННЫХ) ----------
+  mysql:
+    image: mysql:8.0               # Образ MySQL 8.0
+    container_name: joomla_mysql   # Имя контейнера
+    
+    restart: unless-stopped        # Автоперезапуск при падении
+    
+    # ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ (настройки)
+    environment:
+      MYSQL_ROOT_PASSWORD: RootPassword123!      # Пароль root пользователя
+      MYSQL_DATABASE: joomla_db                 # Имя базы данных
+      MYSQL_USER: joomla_user                   # Имя пользователя БД
+      MYSQL_PASSWORD: UserPassword123!          # Пароль пользователя БД
+      TZ: Europe/Moscow                         # Часовой пояс
+    
+    # КЛЮЧЕВАЯ КОМАНДА: настраиваем аутентификацию для совместимости
+    command: 
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    
+    # ПОДКЛЮЧЕНИЕ ТОМОВ (том:путь_в_контейнере)
+    volumes:
+      - mysql_data:/var/lib/mysql                # Данные БД
+      - ./backups:/docker-entrypoint-initdb.d    # Папка для SQL скриптов
+    
+    # ПОДКЛЮЧЕНИЕ К СЕТИ
+    networks:
+      - joomla_network
+    
+    # ПРОВЕРКА ЗДОРОВЬЯ (ждем пока MySQL запустится)
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pRootPassword123!"]
+      interval: 10s    # Проверять каждые 10 сек
+      timeout: 5s      # Ждать ответ 5 сек
+      retries: 5       # Пробовать 5 раз
+      start_period: 30s # Дать 30 секунд на первоначальный запуск
+    
+    # Если нужно подключиться к БД снаружи, раскомментируйте:
+    # ports:
+    #   - "3306:3306"
+
+  # ---------- СЕРВИС 2: JOOMLA (САЙТ С APACHE) ----------
+  joomla:
+    image: joomla:4-apache         # Образ Joomla 4 с Apache
+    container_name: joomla_web     # Имя контейнера
+    
+    restart: unless-stopped
+    
+    # ЗАВИСИМОСТИ: ждем пока MySQL будет готова
+    depends_on:
+      mysql:
+        condition: service_healthy
+    
+    # НАСТРОЙКИ JOOMLA
+    environment:
+      # Настройки подключения к БД (ДОЛЖНЫ СОВПАДАТЬ с настройками MySQL!)
+      JOOMLA_DB_HOST: mysql                    # Имя сервиса БД
+      JOOMLA_DB_NAME: joomla_db                # Имя БД
+      JOOMLA_DB_USER: joomla_user              # Пользователь БД
+      JOOMLA_DB_PASSWORD: UserPassword123!     # Пароль БД
+      JOOMLA_DB_PREFIX: jos_                   # Префикс таблиц
+      
+      # Дополнительные настройки
+      JOOMLA_DB_DRIVER: mysqli                 # Тип драйвера БД
+      PHP_MEMORY_LIMIT: 256M                   # Память для PHP
+      PHP_UPLOAD_MAX_FILESIZE: 64M             # Максимальный размер загружаемого файла
+    
+    # ПОДКЛЮЧАЕМ ТОМЫ И ПАПКИ
+    volumes:
+      # Основной том для файлов Joomla
+      - joomla_data:/var/www/html
+      
+      # Локальные папки для кастомных модулей и тем
+      - ./modules:/var/www/html/modules
+      - ./themes:/var/www/html/themes
+      
+      # Папка для логов Apache
+      - ./logs:/var/log/apache2
+    
+    # Порт для прямого доступа к Joomla
+    ports:
+      - "8089:80"        # 8080 на компьютере -> 80 в контейнере
+    
+    # ПОДКЛЮЧЕНИЕ К СЕТИ
+    networks:
+      - joomla_network

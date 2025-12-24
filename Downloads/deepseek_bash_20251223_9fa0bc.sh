@@ -1,0 +1,1 @@
+docker exec -it joomla_mysql mysql -u root -p

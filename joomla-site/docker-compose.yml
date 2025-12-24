@@ -1,0 +1,118 @@
+# ============================================
+# КОНФИГУРАЦИЯ ДЛЯ ЗАПУСКА JOOMLA С MYSQL
+# ============================================
+
+# Версия формата Docker Compose
+version: '3.8'
+
+# ============================================
+# ТОМЫ (это как "флешки" для хранения данных)
+# ============================================
+volumes:
+  # Том для базы данных MySQL
+  # Данные будут сохраняться даже если выключить контейнер
+  mysql_data:
+  
+  # Том для файлов Joomla
+  # Фотографии, документы, настройки будут сохранены
+  joomla_data:
+
+# ============================================
+# КОНТЕЙНЕРЫ (наши "виртуальные компьютеры")
+# ============================================
+
+services:
+  # ---------- КОНТЕЙНЕР 1: MYSQL (БАЗА ДАННЫХ) ----------
+  mysql:
+    # Используем официальный образ MySQL версии 8.0
+    image: mysql:8.0
+    
+    # Имя контейнера (чтобы мы могли его найти)
+    container_name: mysql_database
+    
+    # Всегда перезапускать если контейнер упал
+    restart: always
+    
+    # ВАЖНАЯ КОМАНДА: настраиваем MySQL для работы с Joomla
+    command: 
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    
+    # ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ (настройки для MySQL)
+    environment:
+      # Пароль для администратора базы данных
+      MYSQL_ROOT_PASSWORD: RootPassword123!
+      
+      # Имя базы данных, которую создаст MySQL автоматически
+      MYSQL_DATABASE: joomla_site
+      
+      # Имя пользователя базы данных (не администратора)
+      MYSQL_USER: joomla_admin
+      
+      # Пароль для пользователя joomla_admin
+      MYSQL_PASSWORD: AdminPassword123!
+    
+    # КУДА СОХРАНЯТЬ ДАННЫЕ БАЗЫ ДАННЫХ
+    volumes:
+      # mysql_data - это том, который мы создали выше
+      # :/var/lib/mysql - это папка внутри контейнера где хранятся данные
+      - mysql_data:/var/lib/mysql
+    
+    # ПРОВЕРКА ЗДОРОВЬЯ: ждем пока MySQL полностью запустится
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s      # Проверять каждые 10 секунд
+      timeout: 5s        # Ждать ответа 5 секунд
+      retries: 10        # Пробовать 10 раз
+      start_period: 30s  # Дать 30 секунд на первоначальный запуск
+
+  # ---------- КОНТЕЙНЕР 2: JOOMLA (САЙТ) ----------
+  joomla:
+    # Используем официальный образ Joomla с Apache веб-сервером
+    image: joomla:4-apache
+    
+    # Имя контейнера
+    container_name: joomla_website
+    
+    # Всегда перезапускать
+    restart: always
+    
+    # ВАЖНО: ждем пока MySQL будет готов
+    # Если попытаться запустить Joomla раньше - будет ошибка
+    depends_on:
+      mysql:
+        condition: service_healthy
+    
+    # НАСТРОЙКИ ДЛЯ JOOMLA
+    environment:
+      # Имя хоста MySQL (должно совпадать с именем сервиса выше - "mysql")
+      JOOMLA_DB_HOST: mysql
+      
+      # Имя пользователя БД (должно совпадать с MYSQL_USER выше)
+      JOOMLA_DB_USER: joomla_admin
+      
+      # Пароль (должен совпадать с MYSQL_PASSWORD выше)
+      JOOMLA_DB_PASSWORD: AdminPassword123!
+      
+      # Имя базы данных (должно совпадать с MYSQL_DATABASE выше)
+      JOOMLA_DB_NAME: joomla_site
+      
+      # Префикс для таблиц в базе данных (можно оставить по умолчанию)
+      JOOMLA_DB_PREFIX: jos_
+      
+      # Тип драйвера базы данных
+      JOOMLA_DB_DRIVER: mysqli
+    
+    # КУДА СОХРАНЯТЬ ФАЙЛЫ JOOMLA
+    volumes:
+      # joomla_data - том для файлов Joomla
+      # :/var/www/html - папка внутри контейнера где лежат файлы сайта
+      - joomla_data:/var/www/html
+    
+    # ОТКРЫВАЕМ ПОРТ ДЛЯ ДОСТУПА К САЙТУ
+    ports:
+      # 8080:80 означает:
+      # - порт 8080 на вашем компьютере
+      # - будет соединен с портом 80 внутри контейнера
+      - "8082:80"

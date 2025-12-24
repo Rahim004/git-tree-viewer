@@ -1,0 +1,1 @@
+1766584277460	SessionStore	ERROR	NotReadableError when reading session file: recovery: NotReadableError: Could not read `/home/admin/snap/firefox/common/.mozilla/firefox/cs7a9omq.default/sessionstore-backups/recovery.jsonlz4': could not decompress file: buffer is too small (NS_ERROR_FILE_CORRUPTED) No traceback available

@@ -1,0 +1,67 @@
+# ============================================
+# РАБОЧАЯ КОНФИГУРАЦИЯ С УНИКАЛЬНЫМИ ИМЕНАМИ
+# ============================================
+
+version: '3.8'
+
+networks:
+  joomla_net:
+    driver: bridge
+
+volumes:
+  mysql_volume:
+  joomla_volume:
+
+services:
+  # ИЗМЕНИЛИ ИМЯ КОНТЕЙНЕРА: было joomla_mysql, стало myjoomla_db
+  mysql:
+    image: mysql:8.0
+    container_name: myjoomla_db          # ⬅️ ДРУГОЕ ИМЯ
+    restart: unless-stopped
+    
+    command: 
+      - --default-authentication-plugin=mysql_native_password
+    
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: joomla
+      MYSQL_USER: joomla
+      MYSQL_PASSWORD: joomla123
+    
+    volumes:
+      - mysql_volume:/var/lib/mysql
+    
+    networks:
+      - joomla_net
+    
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ИЗМЕНИЛИ ИМЯ КОНТЕЙНЕРА: было joomla_web, стало myjoomla_site
+  joomla:
+    image: joomla:4-apache
+    container_name: myjoomla_site        # ⬅️ ДРУГОЕ ИМЯ
+    restart: unless-stopped
+    
+    depends_on:
+      mysql:
+        condition: service_healthy
+    
+    environment:
+      JOOMLA_DB_HOST: mysql
+      JOOMLA_DB_USER: joomla
+      JOOMLA_DB_PASSWORD: joomla123
+      JOOMLA_DB_NAME: joomla
+      JOOMLA_DB_PREFIX: jos_
+    
+    volumes:
+      - joomla_volume:/var/www/html
+    
+    ports:
+      - "8089:80"
+    
+    networks:
+      - joomla_net

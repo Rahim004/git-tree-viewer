@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xbel version="1.0"
+      xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks"
+      xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info"
+>
+  <bookmark href="file:///home/admin/drupal-project/docker-compose.yml" added="2025-12-23T12:56:59.349613Z" modified="2025-12-24T15:16:54.131511Z" visited="2025-12-24T15:16:51.966071Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gnome-text-editor" exec="&apos;gnome-text-editor %u&apos;" modified="2025-12-24T15:16:54.131511Z" count="24"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/joomla-site/docker-compose.yml" added="2025-12-23T18:10:52.456437Z" modified="2025-12-24T15:16:54.131510Z" visited="2025-12-24T15:16:52.057969Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gnome-text-editor" exec="&apos;gnome-text-editor %u&apos;" modified="2025-12-24T15:16:54.131509Z" count="15"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/Downloads/docker-compose.yaml" added="2025-12-23T19:35:00.458462Z" modified="2025-12-24T15:16:54.131513Z" visited="2025-12-24T15:16:51.985109Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gnome-text-editor" exec="&apos;gnome-text-editor %u&apos;" modified="2025-12-24T15:16:54.131512Z" count="14"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/my-first-script/test-new-repo/README.md" added="2025-12-24T14:46:44.071405Z" modified="2025-12-24T15:16:54.131511Z" visited="2025-12-24T15:16:52.057043Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gnome-text-editor" exec="&apos;gnome-text-editor %u&apos;" modified="2025-12-24T15:16:54.131510Z" count="11"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/my-first-script/test-new-repo/feature.txt" added="2025-12-24T14:46:48.308038Z" modified="2025-12-24T15:16:54.131508Z" visited="2025-12-24T15:16:51.985466Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gnome-text-editor" exec="&apos;gnome-text-editor %u&apos;" modified="2025-12-24T15:16:54.131508Z" count="10"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/my-first-script/test-new-repo/git-tree.sh" added="2025-12-24T14:46:53.317806Z" modified="2025-12-24T15:16:54.131507Z" visited="2025-12-24T15:16:51.995112Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gnome-text-editor" exec="&apos;gnome-text-editor %u&apos;" modified="2025-12-24T15:16:54.131507Z" count="8"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/git_tree.sh" added="2025-12-24T15:02:39.468668Z" modified="2025-12-24T15:16:54.131505Z" visited="2025-12-24T15:16:52.110858Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gnome-text-editor" exec="&apos;gnome-text-editor %u&apos;" modified="2025-12-24T15:16:54.131503Z" count="4"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/find_git_repos.sh" added="2025-12-24T15:16:54.131514Z" modified="2025-12-24T15:16:54.131515Z" visited="2025-12-24T15:16:51.996220Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <bookmark:applications>
+          <bookmark:application name="gnome-text-editor" exec="&apos;gnome-text-editor %u&apos;" modified="2025-12-24T15:16:54.131514Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+</xbel>

@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # Контейнер с веб-сервером Apache и Joomla
+  joomla:
+    image: joomla:5-php8.2-apache
+    container_name: joomla-web
+    restart: always
+    ports:
+      - "8087:80"  # Доступ к сайту по localhost:8080
+    environment:
+      - JOOMLA_DB_HOST=mysql
+      - JOOMLA_DB_USER=joomla_user
+      - JOOMLA_DB_PASSWORD=StrongPassword123!
+      - JOOMLA_DB_NAME=joomla_db
+      - JOOMLA_DB_PREFIX=jos_
+    volumes:
+      # Том для файлов Joomla (темы, плагины, загрузки)
+      - joomla_data:/var/www/html
+      # Кастомный php.ini для увеличения лимитов загрузки файлов
+      - ./config/php.ini:/usr/local/etc/php/conf.d/custom.ini
+    depends_on:
+      - mysql
+    networks:
+      - joomla-network
+
+  # Контейнер с MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: joomla-mysql
+    restart: always
+    environment:
+      - MYSQL_DATABASE=joomla_db
+      - MYSQL_USER=joomla_user
+      - MYSQL_PASSWORD=StrongPassword123!
+      - MYSQL_ROOT_PASSWORD=RootPassword456!
+    volumes:
+      # Том для данных MySQL
+      - mysql_data:/var/lib/mysql
+      # Инициализационная SQL для создания пользователя (альтернатива)
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - joomla-network
+    command: 
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --innodb_buffer_pool_size=256M
+
+# Определение томов для сохранения данных
+volumes:
+  joomla_data:
+    name: joomla-website-data
+  mysql_data:
+    name: joomla-database-data
+
+# Создание отдельной сети для контейнеров
+networks:
+  joomla-network:
+    driver: bridge
+    name: joomla-internal-network

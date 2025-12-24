@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xbel version="1.0"
+      xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks"
+      xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info"
+>
+  <bookmark href="file:///home/admin/drupal-project/docker-compose.yml" added="2025-12-23T12:56:55.611083Z" modified="2025-12-23T12:56:55.611088Z" visited="2025-12-23T12:56:55.611084Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/yaml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gnome-text-editor %U&apos;" modified="2025-12-23T12:56:55.611086Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/joomla-project/docker-compose.yml" added="2025-12-23T17:23:36.649211Z" modified="2025-12-23T17:23:36.649221Z" visited="2025-12-23T17:23:36.649212Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/yaml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gnome-text-editor %U&apos;" modified="2025-12-23T17:23:36.649214Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/joomla-project/docker-compose.yml.backup" added="2025-12-23T17:23:41.600015Z" modified="2025-12-23T17:23:41.600020Z" visited="2025-12-23T17:23:41.600016Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/plain"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gnome-text-editor %U&apos;" modified="2025-12-23T17:23:41.600018Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/joomla-project/mysql-init/01-create-user.sql" added="2025-12-23T17:27:57.252093Z" modified="2025-12-23T17:28:42.623701Z" visited="2025-12-23T17:27:57.252095Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/sql"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gnome-text-editor %U&apos;" modified="2025-12-23T17:28:42.623697Z" count="4"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/joomla-site/docker-compose.yml" added="2025-12-23T18:10:49.423684Z" modified="2025-12-23T18:10:49.423687Z" visited="2025-12-23T18:10:49.423685Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/yaml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gnome-text-editor %U&apos;" modified="2025-12-23T18:10:49.423686Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/Downloads/docker-compose.yaml" added="2025-12-23T19:34:57.617114Z" modified="2025-12-23T19:34:57.617119Z" visited="2025-12-23T19:34:57.617115Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/yaml"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gnome-text-editor %U&apos;" modified="2025-12-23T19:34:57.617117Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/joomla-docker/README.md" added="2025-12-23T21:37:35.450234Z" modified="2025-12-23T21:37:35.450238Z" visited="2025-12-23T21:37:35.450235Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/markdown"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gnome-text-editor %U&apos;" modified="2025-12-23T21:37:35.450236Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/my-first-script/test-new-repo/README.md" added="2025-12-24T14:46:41.432820Z" modified="2025-12-24T14:46:41.432824Z" visited="2025-12-24T14:46:41.432820Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/markdown"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gnome-text-editor %U&apos;" modified="2025-12-24T14:46:41.432822Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/my-first-script/test-new-repo/feature.txt" added="2025-12-24T14:46:44.906851Z" modified="2025-12-24T14:46:44.906854Z" visited="2025-12-24T14:46:44.906852Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/plain"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gnome-text-editor %U&apos;" modified="2025-12-24T14:46:44.906852Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/my-first-script/test-new-repo/git-tree.sh" added="2025-12-24T14:46:49.650620Z" modified="2025-12-24T14:47:06.456659Z" visited="2025-12-24T14:46:49.650621Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/x-shellscript"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gnome-text-editor %U&apos;" modified="2025-12-24T14:47:06.456655Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/git_tree.sh" added="2025-12-24T15:02:36.546423Z" modified="2025-12-24T15:16:42.258921Z" visited="2025-12-24T15:02:36.546423Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/x-shellscript"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gnome-text-editor %U&apos;" modified="2025-12-24T15:16:42.258916Z" count="2"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/admin/find_git_repos.sh" added="2025-12-24T15:16:51.437913Z" modified="2025-12-24T15:16:51.437918Z" visited="2025-12-24T15:16:51.437914Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="application/x-shellscript"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gnome-text-editor %U&apos;" modified="2025-12-24T15:16:51.437916Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+</xbel>
