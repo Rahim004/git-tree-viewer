@@ -1,1 +1,2 @@
-# Git Tree Viewer Project
+# Git Tree Viewer
+Скрипт для отображения дерева Git-репозитория.
