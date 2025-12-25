@@ -1,0 +1,97 @@
+name: Daily Automatic Release
+
+on:
+  # Запускается каждый день в 00:00 UTC
+  schedule:
+    - cron: '0 0 * * *'
+  # Позволяет запускать вручную
+  workflow_dispatch:
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Разрешение создавать релизы
+    
+    steps:
+      - name: 📥 Забрать код
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Вся история коммитов
+      
+      - name: 🔢 Рассчитать версию (vMonth.Week.WeekDay)
+        id: version
+        run: |
+          # Получаем текущую дату в UTC
+          MONTH=$(date -u +'%-m')        # Номер месяца (1-12)
+          WEEK=$(date -u +'%-U')         # Номер недели в году (0-53)
+          WEEKDAY=$(date -u +'%-u')      # День недели (1-7, 1=понедельник)
+          
+          VERSION="v${MONTH}.${WEEK}.${WEEKDAY}"
+          echo "✅ Версия: $VERSION"
+          
+          # Сохраняем для следующих шагов
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      
+      - name: 📝 Создать список изменений
+        id: changelog
+        run: |
+          # Ищем последний тег
+          if git describe --tags --abbrev=0 2>/dev/null; then
+            LAST_TAG=$(git describe --tags --abbrev=0)
+            echo "📌 Последний тег: $LAST_TAG"
+            
+            # Коммиты с последнего тега
+            CHANGES=$(git log --oneline --pretty=format:"- %s (%h) [%an]" "${LAST_TAG}..HEAD" 2>/dev/null)
+            
+            if [ -z "$CHANGES" ]; then
+              CHANGES="## 📋 Изменений нет\n\nНет новых коммитов с последнего релиза."
+            else
+              CHANGES="## 📋 Новые коммиты\n\n$CHANGES"
+            fi
+          else
+            # Первый релиз - все коммиты
+            CHANGES="## 📋 Все коммиты (первый релиз)\n\n"
+            CHANGES+=$(git log --oneline --pretty=format:"- %s (%h) [%an]" 2>/dev/null)
+          fi
+          
+          # Добавляем статистику
+          STATS="\n\n## 📊 Статистика\n"
+          STATS+="- Всего коммитов: $(git rev-list --all --count 2>/dev/null || echo '0')\n"
+          STATS+="- Веток: $(git branch -a | wc -l | xargs)\n"
+          STATS+="- Авторов: $(git log --format='%an' | sort -u | wc -l)\n"
+          
+          # Формируем итоговое описание
+          RELEASE_BODY="# 🚀 Ежедневный релиз ${{ steps.version.outputs.version }}\n\n"
+          RELEASE_BODY+="**Дата:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')\n\n"
+          RELEASE_BODY+="${CHANGES}"
+          RELEASE_BODY+="${STATS}\n\n---\n\n"
+          RELEASE_BODY+="*🤖 Автоматически сгенерировано GitHub Actions*"
+          
+          # Сохраняем в файл
+          echo "$RELEASE_BODY" > release_notes.md
+          
+          # Выводим для отладки
+          echo "📄 Созданы заметки релиза"
+      
+      - name: 🏷️ Создать Git тег
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          
+          # Создаем аннотированный тег
+          git tag -a "${{ steps.version.outputs.version }}" \
+                  -m "Ежедневный релиз ${{ steps.version.outputs.version }}$(echo -e '\n\nДата: '$(date))"
+          
+          # Отправляем тег на GitHub
+          git push origin "${{ steps.version.outputs.version }}"
+      
+      - name: 🚀 Создать релиз на GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: "Релиз ${{ steps.version.outputs.version }}"
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+          generate_release_notes: false
